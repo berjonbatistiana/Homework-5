@@ -1,0 +1,49 @@
+thead > tr > .buttons-col {
+    border: none;
+}
+
+.day-calendar {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.time-row > th {
+    height: 65px;
+}
+
+.buttons-col {
+  width: 10%;
+}
+
+.calendar-btns {
+    display: flex;
+}
+
+.save-btn, .del-btn {
+    border-radius: 0;
+}
+
+.del-btn{
+    border-radius: 0 5px 5px 0;
+}
+
+.time-col {
+  width: 7%;
+}
+
+.event-col {
+  width: 83%;
+}
+
+.time-indicator > p{
+    text-align: right;
+    margin: auto 5px;
+}
+
+.event-textarea {
+    border: 0;
+    width: 100%;
+    height: 60px;
+    font-size: 14px;
+    line-height: 1.5;
+}
