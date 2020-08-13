@@ -1,15 +1,19 @@
 function calendar(){
     this.calendar = 
     [ 
-        {'time':'00:00', 'event':''}, {'time':'01:00', 'event':''}, {'time':'02:00', 'event':''}, 
-        {'time':'03:00', 'event':''}, {'time':'04:00', 'event':''}, {'time':'05:00', 'event':''}, 
-        {'time':'06:00', 'event':''}, {'time':'07:00', 'event':''}, {'time':'08:00', 'event':''}, 
-        {'time':'09:00', 'event':''}, {'time':'10:00', 'event':''}, {'time':'11:00', 'event':''}, 
+        {'time':'00:00', 'event':'', 'is_office_hour': false}, {'time':'01:00', 'event':'', 'is_office_hour': false}, 
+        {'time':'02:00', 'event':'', 'is_office_hour': false}, {'time':'03:00', 'event':'', 'is_office_hour': false}, 
+        {'time':'04:00', 'event':'', 'is_office_hour': false}, {'time':'05:00', 'event':'', 'is_office_hour': false}, 
+        {'time':'06:00', 'event':'', 'is_office_hour': false}, {'time':'07:00', 'event':'', 'is_office_hour': false}, 
+        {'time':'08:00', 'event':'', 'is_office_hour': false}, {'time':'09:00', 'event':'', 'is_office_hour': true}, 
+        {'time':'10:00', 'event':'', 'is_office_hour': true}, {'time':'11:00', 'event':'', 'is_office_hour': true}, 
         
-        {'time':'12:00', 'event':''}, {'time':'13:00', 'event':''}, {'time':'14:00', 'event':''}, 
-        {'time':'15:00', 'event':''}, {'time':'16:00', 'event':''}, {'time':'17:00', 'event':''},
-        {'time':'18:00', 'event':''}, {'time':'19:00', 'event':''}, {'time':'20:00', 'event':''}, 
-        {'time':'21:00', 'event':''}, {'time':'22:00', 'event':''}, {'time':'23:00', 'event':''}
+        {'time':'12:00', 'event':'', 'is_office_hour': true}, {'time':'13:00', 'event':'', 'is_office_hour': true}, 
+        {'time':'14:00', 'event':'', 'is_office_hour': true}, {'time':'15:00', 'event':'', 'is_office_hour': true}, 
+        {'time':'16:00', 'event':'', 'is_office_hour': true}, {'time':'17:00', 'event':'', 'is_office_hour': true},
+        {'time':'18:00', 'event':'', 'is_office_hour': false}, {'time':'19:00', 'event':'', 'is_office_hour': false}, 
+        {'time':'20:00', 'event':'', 'is_office_hour': false}, {'time':'21:00', 'event':'', 'is_office_hour': false}, 
+        {'time':'22:00', 'event':'', 'is_office_hour': false}, {'time':'23:00', 'event':'', 'is_office_hour': false}
     ];
 }
 
@@ -145,7 +149,10 @@ timeArr.forEach((time,i) => {
     // set text, add class, append to html
     $newTextarea.text(time.event);
     $newTimeRow.addClass(classModifier);
-    $dayCalendar.append($newTimeRow);
+
+    if (time.is_office_hour){
+        $dayCalendar.append($newTimeRow);
+    }
     
 });
 
