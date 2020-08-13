@@ -1,37 +1,161 @@
-let now = moment().format('H'); 
-let timeIndex = parseInt(now); // time index
+function calendar(){
+    this.calendar = 
+    [ 
+        {'time':'00:00', 'event':''}, {'time':'01:00', 'event':''}, {'time':'02:00', 'event':''}, 
+        {'time':'03:00', 'event':''}, {'time':'04:00', 'event':''}, {'time':'05:00', 'event':''}, 
+        {'time':'06:00', 'event':''}, {'time':'07:00', 'event':''}, {'time':'08:00', 'event':''}, 
+        {'time':'09:00', 'event':''}, {'time':'10:00', 'event':''}, {'time':'11:00', 'event':''}, 
+        
+        {'time':'12:00', 'event':''}, {'time':'13:00', 'event':''}, {'time':'14:00', 'event':''}, 
+        {'time':'15:00', 'event':''}, {'time':'16:00', 'event':''}, {'time':'17:00', 'event':''},
+        {'time':'18:00', 'event':''}, {'time':'19:00', 'event':''}, {'time':'20:00', 'event':''}, 
+        {'time':'21:00', 'event':''}, {'time':'22:00', 'event':''}, {'time':'23:00', 'event':''}
+    ];
+}
 
-let $dayCalendar = $('.day-calendar > tbody')
+const timeArr = new calendar().calendar;
+
+const calendarLocalKey = 'calendar';
+const workdayLocalKey = 'current_workday';
+
+let day = moment().format('MMMM DD Y')
+let hour = moment().format('H'); 
+let timeIndex = parseInt(hour); // time index
+
+let $currentDay = $('#currentDay');
+let $dayCalendar = $('.day-calendar > tbody');
 let $timeRow = $('.time-row');
 
-let timeArr = [ '00:00', '01:00','02:00','03:00','04:00','05:00','06:00',
-                '07:00','08:00','09:00','10:00','11:00','12:00','13:00',
-                '14:00','15:00','16:00','17:00','18:00','19:00','20:00',
-                '21:00','22:00','23:00'];
+// saving array calendar into the localstorage
+function saveCalendarLocal(){
+    localStorage.setItem(calendarLocalKey, JSON.stringify(timeArr));
+}
 
+// loading array calendar into the localstorage. checks if it exists first and only loads if it does
+function loadCalenedarLocal(){
+    let loadedCalendar = JSON.parse(localStorage.getItem(calendarLocalKey));
+    
+    if (!loadedCalendar){
+        return;
+    }
+    timeArr.length = 0;
+
+    loadedCalendar.forEach(element => {
+        timeArr.push(element);
+    });
+}
+
+// resets the calendar to have empty events
+function resetCalendar(){
+    localStorage.setItem(calendarLocalKey, JSON.stringify((new calendar()).calendar));
+    loadCalenedarLocal();
+}
+
+// saving into array
+function setCalendarEventFromHour(hour){
+    let $selectedTimeRow = $(`tr[data-index='${hour}'`);
+    timeArr[hour].event = $selectedTimeRow.find('.event-textarea').val();
+}
+
+// loading from array
+// hour is equivalent to the timearray index
+function getCalendarEventFromHour(hour){
+    let timeObject = timeArr[hour];
+    let $selectedTimeRow = $(`tr[data-index='${hour}'`);
+    let eventText = $selectedTimeRow.find('.event-textarea').val();
+
+    timeObject.event = eventText;
+}
+
+// clear contents from an hour
+function clearCalendarEventFromHour(hour){
+    let timeObject = timeArr[hour];
+    let $selectedTimeRow = $(`tr[data-index='${hour}'`);
+    $selectedTimeRow.find('.event-textarea').val('');
+
+    timeObject.event = '';
+}
+
+// checks if the day is new, if true clear the array contents and start over
+function setNewDay(){
+
+    let workdayLocalStorage = localStorage.getItem(workdayLocalKey);
+
+    // If new day, reset calendar
+    if (!workdayLocalStorage || localStorage.getItem(workdayLocalKey) !== day){
+        localStorage.setItem(workdayLocalKey, day);
+        resetCalendar();
+    }
+
+}
+
+
+// button events
+
+// delagated on click catcher
+$dayCalendar.on('click', function(e){
+    e.preventDefault();
+
+    // catch a button in the calendar
+    if (e.target.matches('button')){
+        let $buttonType = $(e.target);
+        let targetIndex = $buttonType.parent().parent().attr('data-index');
+
+        if ($buttonType.hasClass('save-btn')){
+            setCalendarEventFromHour(targetIndex);
+            saveCalendarLocal();
+        } else if ($buttonType.hasClass('del-btn')){
+            clearCalendarEventFromHour(targetIndex);
+            saveCalendarLocal();
+        }
+    }
+});
+
+// Let this run when the page loads to render the whole calendar
+
+// checks the day and clears the local storage calendar if new day
+setNewDay();
+
+// loads the calendar from the local storage to the array
+loadCalenedarLocal();
+
+// displays the current day as text
+$currentDay.text(day);
+
+// creates the html elements for the calendar and prefills the event textbox if an entry exists
 timeArr.forEach((time,i) => {
-    if (i === 0){return;} // skip first item in the array
+    if (i === 0){return;} // skip first item in the array because it is already attached in the html file
 
     let classModifier = '';
  
+    // clone the existing row of hour and creates a new one with a new hour
     let $newTimeRow = $timeRow.clone();
+    let $newTextarea = $newTimeRow.children('.event-text').children('.event-textarea');
     $newTimeRow.attr('data-index', i);
-    $newTimeRow.children('.time-indicator').children('p').text(time);
+    $newTimeRow.children('.time-indicator').children('p').text(time.time);
     
+    // checks if the hour has passed or not and adds the necessary attribute
     if (i < timeIndex){
         classModifier+= 'time-passed';
-        $newTimeRow.children('.event-text').children('.event-textarea').attr('disabled', true);
+        $newTextarea.attr('disabled', true);
     } else if (i === timeIndex) {
         classModifier+= 'time-current';
     }
-    
+
+    // set text, add class, append to html
+    $newTextarea.text(time.event);
     $newTimeRow.addClass(classModifier);
     $dayCalendar.append($newTimeRow);
     
 });
 
+// checks the hour 0:00 if it has passed or not
 if (timeIndex !== 0){
     $timeRow.addClass('time-passed');
+    $timeRow.find('.event-textarea').attr('disabled', true);
 } else {
     $timeRow.addClass('time-current');
 }
+
+// sets an event for hour 0:00 if it exists (most likely, this will contain nothing)
+$timeRow.children('.event-text').children('.event-textarea').text(timeArr[0].event);
