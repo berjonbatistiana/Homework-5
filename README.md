@@ -4,9 +4,9 @@ The homework task is to create a calendar using javscript. It should contain the
 
 Below are screenshots of the homework from the project
 
-![Screenshot 1](./Assets/screenshots/ss1.png)
-![Screenshot 2](./Assets/screenshots/ss2.png)
-![Screenshot 3](./Assets/screenshots/ss3.png)
+![Screenshot 1](./Assets/ss1.png)
+![Screenshot 2](./Assets/ss2.png)
+![Screenshot 3](./Assets/ss3.png)
 
 This link goes to the live version of the homework.
 
