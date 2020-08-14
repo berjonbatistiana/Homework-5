@@ -156,6 +156,11 @@ timeArr.forEach((time,i) => {
     
 });
 
+// checks if hour 0:00 is an office hour
+if (!timeArr[0].is_office_hour){
+    $timeRow.attr('hidden', '');
+}
+
 // checks the hour 0:00 if it has passed or not
 if (timeIndex !== 0){
     $timeRow.addClass('time-passed');
